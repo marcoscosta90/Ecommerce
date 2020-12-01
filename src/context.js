@@ -6,7 +6,7 @@ class ProductProvider extends Component {
     state = {
         products: [],
         detailProduct,
-        cart: storeProducts,
+        cart: [],
         modalOpen: false,
         modalProduct: detailProduct,
         cartSubTotal: 0,
@@ -52,7 +52,11 @@ class ProductProvider extends Component {
 
         this.setState(() => {
             return {products: tempProducts, cart: [...this.state.cart, product] };
-        }, () => {console.log(this.state)});
+        },
+         () => {
+             this.addTotals();
+            }
+        );
     
     };
 
@@ -82,7 +86,28 @@ class ProductProvider extends Component {
     }
 
     clearCart = () => {
-        console.log('cart foi limpo');
+       this.setState(() => {
+           return {cart:[]};
+       }, () => {
+           this.setProducts();
+           this.addTotals();
+       });
+    }
+
+    addTotals = () => {
+        let subTotal = 0;
+        this.state.cart.map(item => (subTotal += item.total));
+        const tempTax = subTotal * 0.1;
+        const tax = parseFloat(tempTax.toFixed(2));
+        const total = subTotal + tax;
+
+    this.setState(() => {
+        return {
+            cartSubTotal: subTotal,
+            cartTax: tax,
+            cartTotal: total
+        }
+    })
     }
     
 
